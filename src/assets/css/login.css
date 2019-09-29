@@ -1,0 +1,48 @@
+ .con{
+    width: 100%;
+    height: 100%;
+    background: url("../backgroud.png") 0 0 no-repeat;
+    background-size: cover;
+  }
+  .kong-d{
+    width: 100%;
+    height: 200px;
+    background: transparent;
+    background: url("../backgroud.png") 0 0 no-repeat;
+  }
+  .log-d{
+    width: 350px;
+    height: 400px;
+    margin: 0 auto;
+    background:rgb(155, 196, 196);
+    border-radius: 10px;
+    filter:alpha(Opacity=60);-moz-opacity:0.6;opacity: 0.7; 
+  }
+  .form{
+    padding-left: 80px;
+  }
+  h3{
+    color: #000;
+    font-size:24px ;
+    line-height: 24px;
+    margin-bottom: 50px;
+    padding-left: 65px;
+    padding-top: 40px;
+  }
+  .submit{
+    width: 60%;
+    margin-left: 20px;
+  }
+  .button{
+    width: 80%;
+    height: 40px;
+    font-size: 14px;
+    text-align: center;
+    background: dodgerblue;
+    border-radius: 5px;
+    color: #fff;
+    border: none;
+    margin: 40px auto 0;
+    outline: none;
+    cursor: pointer;
+  }

@@ -1,30 +1,5 @@
-<style scoped>
-.layout{
-    height: 100%;
-    border: 1px solid #d7dde4;
-    background: #f5f7f9;
-    position: relative;
-    border-radius: 4px;
-    overflow: hidden;
-}
-.ivu-layout {
-    height: 100%;
-}
-.layout-logo{
-    width: 100px;
-    height: 30px;
-    background-image: url('../assets/logo.png');
-    border-radius: 3px;
-    float: left;
-    position: relative;
-    top: 15px;
-    left: 20px;
-}
-.layout-nav{
-    width: 420px;
-    margin: 0 auto;
-    margin-right: 20px;
-}
+<style>
+@import "../assets/css/index.css";
 </style>
 <template>
     <div class="layout">
@@ -55,14 +30,13 @@
             <Layout>
                 <Sider hide-trigger :style="{background: '#fff'}">
                     <Menu active-name="1-1" theme="light" width="auto" :open-names="['1']" @on-select="click">
-                        <Submenu name="1">
+                        <Submenu v-if="operator.role=='ADMINISTRATOR'" name="1">
                             <template slot="title">
                                 <Icon type="ios-navigate"></Icon>
                                 系统管理
                             </template>
-                            <MenuItem name="1-1">用户管理</MenuItem>
-                            <MenuItem name="1-2">Option 2</MenuItem>
-                            <MenuItem name="1-3">Option 3</MenuItem>
+                            <MenuItem name="1-1">操作员管理</MenuItem>
+                            <MenuItem name="1-2">商品管理</MenuItem>
                         </Submenu>
                         <Submenu name="2">
                             <template slot="title">
@@ -83,18 +57,10 @@
                          <Submenu name="4">
                             <template slot="title">
                                 <Icon type="ios-analytics"></Icon>
-                               销售管理
+                                报表统计
                             </template>
                             <MenuItem name="4-1">Option 1</MenuItem>
                             <MenuItem name="4-2">Option 2</MenuItem>
-                        </Submenu>
-                         <Submenu name="5">
-                            <template slot="title">
-                                <Icon type="ios-analytics"></Icon>
-                               报表统计
-                            </template>
-                            <MenuItem name="5-1">Option 1</MenuItem>
-                            <MenuItem name="5-2">Option 2</MenuItem>
                         </Submenu>
                     </Menu>
                 </Sider>
@@ -103,7 +69,9 @@
                         <BreadcrumbItem>{{name}}</BreadcrumbItem>
                     </Breadcrumb>
                     <Content :style="{padding: '24px', minHeight: '280px', background: '#fff'}">
-                        <i-button @click="click">确定</i-button>
+                        <div>
+                             <Table border ref="selection" :columns="columns4" :data="data1"></Table>
+                        </div>
                     </Content>
                 </Layout>
             </Layout>
@@ -112,21 +80,79 @@
 </template>
 <script>
 import axios from 'axios'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min.js'
+
     export default {
         data() {
             return {
-                name: "首页"
+                iddddd:'',
+                name: "首页",
+                operator: this.$route.query.operator,
+                operatorList:[],
+                columns4: [
+                    {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
+                        title: '员工编号',
+                        key: 'operatorNo'
+                    },
+                    {
+                        title: '姓名',
+                        key: 'realName'
+                    },
+                    {
+                        title: '联系电话',
+                        key: 'tel'
+                    },
+                    {
+                        title: '邮箱',
+                        key: 'email'
+                    },
+                    {
+                        title: '联系地址',
+                        key: 'address'
+                    },
+                    {
+                        title:'角色',
+                        key:'role'
+                    }
+                ],
+                data1: [],
             }
         },
+            created:function(){
+                   axios.get('http://127.0.0.1:8080/invoice/operator/getAllOperator',{
+                          }).then((res)=>{
+                              var self =this
+                              if(res.data.result==true){
+                                 self.operatorList= res.data.operatorList;
+                             for(var i=0;i<self.operatorList.length;i++){
+                                var a = {};
+                                a.operatorNo = self.operatorList[i].operatorNo
+                                a.realName=self.operatorList[i].realName
+                                a.tel=self.operatorList[i].tel
+                                a.email=self.operatorList[i].email
+                                a.address=self.operatorList[i].address
+                                if(self.operatorList[i].role === 'ADMINISTRATOR'){
+                                    a.role='管理员';
+                                }else{
+                                    a.role='操作员';
+                                }
+                                this.data1.push(a);
+                            }
+                              }else{
+                                this.$Message.error(res.data.errMsg)
+                              }
+                          })
+            },
         methods:{
-            click() {
-                axios.post('http://127.0.0.1:8080/index/login',{
-                    "username":"张三",
-                    "password":"123456"
-                    }).then((res)=>{
-                        console.log(res.data)
-                    })
-            }
+            handleSelectAll (status) {
+                this.$refs.selection.selectAll(status);
+            },
         }
     }
 </script>
